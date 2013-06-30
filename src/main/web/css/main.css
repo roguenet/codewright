@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    background: url('../images/bg.png') no-repeat fixed #A9AFBA 50% 0;
+    font-family: 'Fauna One', serif;
+    font-size: 14pt;
+}
+
+.center {
+    width: 840px;
+    margin: 10px auto;
+    padding: 40px 50px;
+    position: relative;
+}
+.centerbg {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+}
+.centercap {
+    height: 35px;
+}
+.centertop {
+    top: 0;
+    background: url('../images/centertop.png') no-repeat;
+}
+.centerbot {
+    bottom: 0;
+    background: url('../images/centerbot.png') no-repeat;
+}
+.centertile {
+    top: 35px;
+    bottom: 35px;
+    background: url('../images/centertile.png') repeat-y;
+}
+
+.header {
+    font-size: 20pt;
+}
+.headersub {
+    font-size: 16pt;
+}
