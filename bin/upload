@@ -1,0 +1,13 @@
+#!/bin/bash
+
+pushd src/main/web > /dev/null
+
+for file in `find .`; do
+    if [ ! -f $file ]; then continue; fi;
+
+    filename=`echo $file | sed 's/\.\///'`;
+    aws put roguenet.org-obstinatecodewright/$filename $file
+done
+
+popd > /dev/null
+exit 0;
