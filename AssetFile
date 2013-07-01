@@ -49,7 +49,7 @@ input "src/main/web" do
             }
         )
     end
-    match /js\/codewright\/.*js/ do
+    match /js\/codewright\/*.js/ do
         if ENV['RAKEP_ENV'] == "production"
             uglify
             concat "js/codewright-#{VERSION}.js"
