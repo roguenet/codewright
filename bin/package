@@ -1,30 +1,8 @@
 #!/bin/bash
 
-CODEWRIGHT_HOME=`dirname $0`
-CODEWRIGHT_HOME=`cd $CODEWRIGHT_HOME/.. ; pwd`
+PROD_HOME=../cw-prod
 
-PROD_HOME=$CODEWRIGHT_HOME/../cw-prod
-
-VERSION=`date -u '+%Y%m%d%H%M%S'`
-
-echo -e "\nBuilding web resources..."
-RAKEP_ENV="production" VERSION=$VERSION rakep build
-# I couldn't find a way to do this in the AssetFile, which is super annoying, but at least this
-# works for packaging as a whole
-CDN="http://cdn.codewright.roguenet.org"
-# These nasty bits of sed regex match relative CSS and JS files and replace them with the CDN
-# versions in the production html files.
-CSS_REP="/\'http.*.css\'/!s|\'.*/\([^/\']*\)\.css\'|\'$CDN/css/\1-$VERSION.css\'|"
-JS_REP="/\'http.*.js\'/!s|\'.*/\([^/\']*\)\.js\'|\'$CDN/js/\1-$VERSION.js\'|"
-for html in `find target/assets -name '*html'`; do
-    cat $html | sed "$CSS_REP" | sed "$JS_REP" > $html-2
-    mv $html-2 $html
-done
-
-for file in `find $PROD_HOME/* -not -iwholename '*.svn*'`; do
-    if [ -f $file ]; then rm $file; fi
-done
-cp -R target/assets/* $PROD_HOME/
+bundle exec middleman build
 
 for removed in `svn status $PROD_HOME | grep '^!' | sed 's/^! *//'`; do
     echo "removing $removed";
@@ -34,7 +12,5 @@ for added in `svn status $PROD_HOME | grep '^?' | sed 's/^\? *//'`; do
     echo "adding $added";
     svn add $added
 done
-
-svn commit $PROD_HOME
 
 exit 0;
