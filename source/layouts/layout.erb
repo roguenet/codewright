@@ -7,7 +7,7 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 
     <!-- Use title if it's in the page YAML frontmatter -->
-    <title><%= current_page.data.title || "The Middleman" %></title>
+    <title><%= current_page.data.title || "Rogue Codewright" %></title>
 
     <link href='http://fonts.googleapis.com/css?family=Fauna+One' rel='stylesheet' type='text/css'>
 
@@ -15,7 +15,12 @@
     <%= javascript_include_tag  "all" %>
   </head>
 
-  <body class="<%= page_classes %>">
-    <%= yield %>
+  <body>
+    <div class='center'>
+      <%= yield %>
+      <div class='centertop centercap centerbg'></div>
+      <div class='centertile centerbg'></div>
+      <div class='centerbot centercap cenberbg'></div>
+    </div>
   </body>
 </html>
