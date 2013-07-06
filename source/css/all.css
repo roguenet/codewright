@@ -51,13 +51,13 @@ body {
 }
 
 .sidebar-right {
-    background: red;
+    z-index: 2;
     position: absolute;
     right: -100px;
     top: 50px;
     width: 200px;
     font-size: 9pt;
-    padding: 10px;
+    padding: 20px;
 }
 .sidebar-right .title {
     font-size: 11pt;
@@ -65,4 +65,26 @@ body {
 .sidebar-right ul {
     padding-left: 25px;
     margin: 0;
+}
+.sidebarbg {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+}
+.sidebarcap {
+    height: 15px;
+}
+.sidebartop {
+    top: 0;
+    background: url('../images/sidebartop.png') no-repeat;
+}
+.sidebarbot {
+    bottom: 0;
+    background: url('../images/sidebarbot.png') no-repeat;
+}
+.sidebartile {
+    top: 15px;
+    bottom: 15px;
+    background: url('../images/sidebartile.png') repeat-y;
 }
