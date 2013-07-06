@@ -59,6 +59,13 @@ body {
     padding-left: 25px;
     margin: 0;
 }
+.sidebar-right .iconrow iframe {
+    margin: 10px 10px 0 10px;
+}
+.sidebar-right .iconrow img {
+    margin: 10px 10px 0 10px;
+    vertical-align: top;
+}
 .sidebarbg {
     position: absolute;
     z-index: -1;
