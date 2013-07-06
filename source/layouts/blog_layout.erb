@@ -1,0 +1,5 @@
+<% wrap_layout :layout do %>
+<h2><%= current_article.title %>
+  <small class='muted'>~ <%= current_article.date.strftime('%B %e, %Y') %></small></h2>
+<%= current_article.body %>
+<% end %>
