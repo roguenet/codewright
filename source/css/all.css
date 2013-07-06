@@ -4,7 +4,6 @@ body {
     margin: 0;
     background: url('../images/bg.png') no-repeat fixed #A9AFBA 50% 0;
     font-family: 'Fauna One', serif;
-    font-size: 14pt;
 }
 
 .clear {
@@ -48,12 +47,13 @@ body {
     position: absolute;
     right: -115px;
     top: 50px;
-    width: 200px;
-    font-size: 9pt;
-    padding: 20px;
+    width: 240px;
 }
-.sidebar-right .title {
-    font-size: 11pt;
+.sidebar-right .content {
+    margin: 20px;
+}
+.sidebar-right h5 {
+    margin-bottom: 0;
 }
 .sidebar-right ul {
     padding-left: 25px;

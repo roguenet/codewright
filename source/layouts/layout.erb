@@ -13,32 +13,30 @@
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
           rel="stylesheet">
 
-    <%= stylesheet_link_tag "normalize", "all" %>
+    <%= stylesheet_link_tag "all" %>
   </head>
 
   <body>
     <div class='center'>
       <div class='blog-content'><%= yield %></div>
 
-      <div class='sidebar-right'>
-        <a href='/' class='title'>Home</a><br/>
-        <a href='/about.html' class='title'>About Rogue Codewright</a><br/><br/>
-        <div class='title'>Recent Articles</div>
+      <div class='sidebar-right'><div class='content'>
+        <h5><a href='/'>Home</a></h5>
+        <h5><a href='/about.html'>About Rogue Codewright</a></h5>
+        <h5>Recent Articles</h5>
         <ul>
           <% blog.articles[0...10].each do |article| %>
             <li><%= link_to article.title, article %>
               <span><%= article.date.strftime('%b %e') %></span></li>
           <% end %>
-        </ul><br/>
-
-        <div class='title'>Tags</div>
+        </ul>
+        <h5>Tags</h5>
         <ul>
           <% blog.tags.each do |tag, articles| %>
             <li><%= link_to tag, tag_path(tag) %> (<%= articles.size %>)</a></li>
           <% end %>
-        </ul><br/>
-
-        <div class='title'>By Year</div>
+        </ul>
+        <h5>By Year</h5>
         <ul>
           <% blog.articles.group_by {|a| a.date.year }.each do |year, articles| %>
             <li><%= link_to year, blog_year_path(year) %> (<%= articles.size %>)</a></li>
@@ -47,7 +45,7 @@
         <div class='sidebartop sidebarcap sidebarbg'></div>
         <div class='sidebartile sidebarbg'></div>
         <div class='sidebarbot sidebarcap sidebarbg'></div>
-      </div>
+      </div></div>
 
       <div class='clear'></div>
       <div class='centertop centercap centerbg'></div>
