@@ -43,13 +43,6 @@ body {
     background: url('../images/centertile.png') repeat-y;
 }
 
-.header {
-    font-size: 20pt;
-}
-.headersub {
-    font-size: 16pt;
-}
-
 .sidebar-right {
     z-index: 2;
     position: absolute;
