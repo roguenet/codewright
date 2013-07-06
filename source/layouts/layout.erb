@@ -10,9 +10,10 @@
     <title><%= current_page.data.title || "Rogue Codewright" %></title>
 
     <link href='http://fonts.googleapis.com/css?family=Fauna+One' rel='stylesheet' type='text/css'>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+          rel="stylesheet">
 
     <%= stylesheet_link_tag "normalize", "all" %>
-    <%= javascript_include_tag  "all" %>
   </head>
 
   <body>
@@ -20,22 +21,24 @@
       <div class='blog-content'><%= yield %></div>
 
       <div class='sidebar-right'>
-        <span class='title'>Recent Articles</span>
+        <a href='/' class='title'>Home</a><br/>
+        <a href='about.html' class='title'>About Rogue Codewright</a><br/><br/>
+        <div class='title'>Recent Articles</div>
         <ul>
           <% blog.articles[0...10].each do |article| %>
             <li><%= link_to article.title, article %>
               <span><%= article.date.strftime('%b %e') %></span></li>
           <% end %>
-        </ul>
+        </ul><br/>
 
-        <span class='title'>Tags</span>
+        <div class='title'>Tags</div>
         <ul>
           <% blog.tags.each do |tag, articles| %>
             <li><%= link_to tag, tag_path(tag) %> (<%= articles.size %>)</a></li>
           <% end %>
-        </ul>
+        </ul><br/>
 
-        <span class='title'>By Year</span>
+        <div class='title'>By Year</div>
         <ul>
           <% blog.articles.group_by {|a| a.date.year }.each do |year, articles| %>
             <li><%= link_to year, blog_year_path(year) %> (<%= articles.size %>)</a></li>

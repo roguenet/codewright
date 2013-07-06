@@ -53,12 +53,16 @@ body {
 .sidebar-right {
     background: red;
     position: absolute;
-    right: -130px;
+    right: -100px;
     top: 50px;
-    width: 250px;
+    width: 200px;
     font-size: 9pt;
-    padding: 5px;
+    padding: 10px;
 }
 .sidebar-right .title {
     font-size: 11pt;
+}
+.sidebar-right ul {
+    padding-left: 25px;
+    margin: 0;
 }
