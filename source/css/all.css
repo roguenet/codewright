@@ -7,11 +7,18 @@ body {
     font-size: 14pt;
 }
 
+.clear {
+    clear: both;
+}
+
 .center {
     width: 840px;
     margin: 10px auto;
-    padding: 40px 50px;
+    padding: 30px 50px;
     position: relative;
+}
+.center .content {
+    width: 750px;
 }
 .centerbg {
     position: absolute;
@@ -41,4 +48,17 @@ body {
 }
 .headersub {
     font-size: 16pt;
+}
+
+.sidebar-right {
+    background: red;
+    position: absolute;
+    right: -130px;
+    top: 50px;
+    width: 250px;
+    font-size: 9pt;
+    padding: 5px;
+}
+.sidebar-right .title {
+    font-size: 11pt;
 }
