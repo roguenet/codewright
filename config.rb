@@ -17,7 +17,7 @@ page "/feed.xml", :layout => false
 configure :build do
   activate :minify_css
   activate :minify_javascript
-  activate :asset_hash
+  activate :asset_hash, :ignore => [/^aaaa/]
   set :http_prefix, 'http://cdn.codewright.roguenet.org'
   set :build_dir, '../cw-prod'
 end
