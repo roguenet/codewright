@@ -22,8 +22,8 @@
       <div class='blog-content'><%= yield %></div>
 
       <div class='sidebar-right'><div class='content'>
-        <h5><a href='/'>Home</a></h5>
-        <h5><a href='/about.html'>About Rogue Codewright</a></h5>
+        <h5><%= link_to 'Home', '/' %></h5>
+        <h5><%= link_to 'About Rogue Codewright', '/about.html' %></h5>
         <h5>Recent Articles</h5>
         <ul>
           <% blog.articles[0...10].each do |article| %>
@@ -34,17 +34,19 @@
         <h5>Tags</h5>
         <ul>
           <% blog.tags.each do |tag, articles| %>
-            <li><%= link_to tag, tag_path(tag) %> (<%= articles.size %>)</a></li>
+            <li><%= link_to tag, tag_path(tag) %> (<%= articles.size %>)</li>
           <% end %>
         </ul>
         <h5>By Year</h5>
         <ul>
           <% blog.articles.group_by {|a| a.date.year }.each do |year, articles| %>
-            <li><%= link_to year, blog_year_path(year) %> (<%= articles.size %>)</a></li>
+            <li><%= link_to year, blog_year_path(year) %> (<%= articles.size %>)</li>
           <% end %>
         </ul>
         <div class='iconrow text-center'>
-          <a href='/feed.xml'><img width='20' src='/images/feed-icon-28x28.png'/></a>
+          <% link_to '/feed.xml' do %>
+            <img width='20' src='/images/feed-icon-28x28.png'/>
+          <% end %>
           <a href='https://twitter.com/Roguenet' class='twitter-follow-button' data-show-count='false'>Follow @Roguenet</a>
           <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
         </div>
