@@ -88,3 +88,7 @@ body {
     bottom: 15px;
     background: url('../images/sidebartile.png') repeat-y;
 }
+
+.control-row a {
+    margin-bottom: 10px;
+}

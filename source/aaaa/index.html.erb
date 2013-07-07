@@ -1,0 +1,73 @@
+---
+  title: Awesome Across America Adventure
+---
+
+<h2 align='center'>Awesome Across America Adventure!</h2>
+<p> My father (Jon Curtis) and I bicycled across America.  We completed the
+first two weeks of the trip from Florence, Oregon, to Missuola, Montana, in
+the  summer of 1997. We completed the trip over two months during the
+summer of 1998.</p>
+
+<div class='control-row text-center'>
+  <a class="btn" href="#" id='first'><i class="icon-fast-backward"></i></a>
+  <a class="btn" href="#" id='back'><i class="icon-step-backward"></i></a>
+  <select id="imageList"></select>
+  <a class="btn" href="#" id='next'><i class="icon-step-forward"></i></a>
+  <a class="btn" href="#" id='last'><i class="icon-fast-forward"></i></a>
+</div>
+
+<img id='current' class='text-center' src='./tripoverview.jpg'><br/><br/>
+<div class='text-center'><small>The images found here were edited by
+  <a href='http://joncu.roguenet.org'>Jon Curtis</a>
+  (<a href='mailto:joncu@autodesk.com'>joncu@autodesk.com</a>). AAAA site copyright
+  1999-2013</small></div>
+
+<script language="javascript">
+  var items = ['Trip Overview', 'Florence, OR', 'Redmond, OR', 'Mitchell, OR', 'Hells Canyon, OR',
+    'Council, ID', 'Grangeville, ID', 'Jerry Johnson, ID',  'Preparations', 'Missoula, MT',
+    'Jackson Hot Springs, MT', 'Dillon, MT', 'Ennis, MT', 'Madison Jct, WY', 'Yellowstone, WY',
+    'Grant Village, WY', 'Moran Jct, WY', 'Jeffrey City, WY', 'Lusk, WY', 'Chadron, NB',
+    'Merriman, NB', 'Valentine, NB', 'Laurel, NB', 'Kingsley, IA', 'West Bend, IA', 'Burt, IA',
+    'Eastern IA', 'Quincy, IL', 'St Clair, MO', 'St Genevieve, MO', 'Carbondale, IL', 'Western, KY',
+    'Booneville, KY', 'Hindman, KY', 'Breaks Park, KY-VA', 'Radford, VA', 'Afton, VA',
+    'Willis Church, VA', 'Jamestown, VA', 'Yorktown, VA', 'Washington, DC', 'Dumb Stats',
+    'More Info', 'Final Map'];
+  var list = $('#imageList');
+  for (var ii = 0; ii < items.length; ii++) {
+    var path = items[ii].replace(/[, ]*/g, '').toLowerCase();
+    var option = $('<option value="' + path + '"></option>').append(items[ii]);
+    if (ii == 0) option.attr('selected', true);
+    list.append(option);
+  }
+  list.change(function () {
+    location.hash = list.find(':selected').val();
+  });
+  $(window).bind('hashchange', update);
+
+  function update () {
+    var hash = location.hash.replace(/#/, '');
+    if (hash == null || hash == "") hash = 'tripoverview';
+
+    list.val(hash);
+    // keep the front of the URL intact for CDN purposes.
+    var current = $('#current');
+    current.attr('src', current.attr('src').replace(/[^\/]*$/, hash + '.jpg'));
+
+    var selected = list.find(':selected');
+    if (selected.is(':first-child')) {
+      $('#first').attr('disabled', 'true');
+      $('#back').attr('disabled', 'true');
+    } else {
+      $('#first').removeAttr('disabled').attr('href', '#' + list.find(':first-child').val());
+      $('#back').removeAttr('disabled').attr('href', '#' + list.find(':selected').prev().val());
+    }
+    if (selected.is(':last-child')) {
+      $('#next').attr('disabled', 'true');
+      $('#last').attr('disabled', 'true');
+    } else {
+      $('#next').removeAttr('disabled').attr('href', '#' + list.find(':selected').next().val());
+      $('#last').removeAttr('disabled').attr('href', '#' + list.find(':last-child').val());
+    }
+  }
+  update();
+</script>
