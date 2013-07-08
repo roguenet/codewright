@@ -18,6 +18,9 @@ page "/feed.xml", :layout => false
 configure :build do
   activate :minify_css
   activate :minify_javascript
-  activate :asset_hash, :ignore => [/^aaaa/]
+  activate :asset_hash, :ignore => [/^images\/aaaa/]
   set :build_dir, '../cw-prod'
+  set :css_dir, '//cdn.codewright.roguenet.org/css'
+  set :js_dir, '//cdn.codewright.roguenet.org/js'
+  set :images_dir, '//cdn.codewright.roguenet.org/images'
 end
