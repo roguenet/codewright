@@ -16,11 +16,15 @@ page "/feed.xml", :layout => false
 
 # Build-specific configuration
 configure :build do
+  set :build_dir, '../cw-prod'
+
+  set :cdn_url, '//cdn.codewright.roguenet.org'
+  activate :asset_host
+  set :asset_host do |asset|
+    settings.cdn_url.to_s
+  end
+
   activate :minify_css
   activate :minify_javascript
   activate :asset_hash, :ignore => [/^images\/aaaa/]
-  set :build_dir, '../cw-prod'
-  set :css_dir, '//cdn.codewright.roguenet.org/css'
-  set :js_dir, '//cdn.codewright.roguenet.org/js'
-  set :images_dir, '//cdn.codewright.roguenet.org/images'
 end
