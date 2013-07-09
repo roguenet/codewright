@@ -1,13 +1,62 @@
 ---
-title: Alpha hit testing in Flump
-tags: actionscript, flump
+title: Alpha hit testing in Starling
+tags: actionscript, starling, flump
 ---
+
+In [Starling](http://gamua.com/starling/)'s display stack, the default behavior for
+```DisplayObject.hitTest``` is to use the ```DisplayObject```'s defined bounds, and only its
+defined bounds to determine if a touch hits that sprite. My current game has levels with very
+tightly packed assets, resulting in severely overlapping bounding boxes. Furthermore, on mobile
+devices, we have tight memory constraints, making it impractical to keep the source ```BitmapData```
+for an uploaded texture in memory.
+
+<p class='text-center'>
+<%= image_tag '/blog/2013/07/08/alpha-hit-testing/overlapping.png',
+    :alt => 'Overlapping child bounds' %>
+</p>READMORE
 
 As I mentioned in my
 [initial post](http://codewright.roguenet.org/blog/2013/07/03/initial-post.html), I'm using
-[Flump](https://github.com/threerings/flump) for level export to the client. The levels for the
-game I'm building involve lots of tightly packed assets that have overlapping bound boxes.
+[Flump](https://github.com/threerings/flump) for level export to the client. So, while this code
+example is directly related to loading a Flump library, the technique used to generate an alpha
+mask and use it for hit testing will work in any Starling app.
 
-![Overlapping child bounds](/blog/2013/07/08/alpha-hit-testing/overlapping.png)READMORE
+An explanation of what this class does (click the header link to download the whole thing):
 
-<%= render_code("AlphaHitTestFlumpLibraryLoader.as", "actionscript") %>
+<%= render_code("AlphaHitTestFlumpLibraryLoader.as", "actionscript", :range => [17,26]) %>
+
+The meat of this process; generation of the alpha mask bit array. The idea is to create a
+```ByteArray``` that is as compactly arranged as possible to minimize the memory impact of keeping
+this data around. The result is ```var alphaBits :ByteArray```, containing a single bit for each
+pixel in the source ```BitmapData```. This implementation skips columns and rows at retina
+resolutions in order to cut down the amount of stored data even further.
+
+<%= render_code("AlphaHitTestFlumpLibraryLoader.as", "actionscript", :range => [38,94]) %>
+
+An important result: this implementation is very slow in the flash runtime, particularly on a
+mobile device. If you need pixel-level hit detection, you need to do something like this, but the
+algorithm can be ported to a build-time script to generate a binary file with the same data. Then
+the flash runtime need only load that binary data directly into a ByteArray and continue as normal.
+
+<%= render_code("AlphaHitTestFlumpLibraryLoader.as", "actionscript", :range => [100,104]) %>
+
+The ```AlphaMask``` class simply finds the proper location inside the resulting ```ByteArray```
+to determine if a given position was transparent or opaque in the original ```BitmapData```.
+
+<%= render_code("AlphaHitTestFlumpLibraryLoader.as", "actionscript", :range => [131,148]) %>
+
+The final piece is the ```Image``` subclass with improved ```hitTest()```. Because a Flump library's
+images are going to be mostly ```Quad```s mapped onto a subtexture created via Starling's
+```Texture.fromTexture``` in Flump's ```LibraryLoader```, the ```Image``` needs to know its own
+location on the source atlas.
+
+The ```baseOffset``` is given to this class because we happen to already have that data, and can
+easily pass in the appropriate ```Rectangle``` for the scale used on our mask array. If we
+dropped the optimization in ```pngAtlasLoaded()``` that skips columns and rows, the ```frame```
+member of ```Texture``` could be used for the same purpose.
+
+<%= render_code("AlphaHitTestFlumpLibraryLoader.as", "actionscript", :range => [201,218]) %>
+
+Using the code here, a reasonable and performant approach to using the alpha channel for hit
+detection on sprites that are part of a larger texture atlas in a Starling app can be implemented.
+If you have any questions or comments, feel free to leave them below!

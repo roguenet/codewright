@@ -4,10 +4,19 @@ body {
     margin: 0;
     background: url('../images/bg.png') no-repeat fixed #A9AFBA 50% 0;
     font-family: 'Fauna One', serif;
+    font-size: 16px;
 }
 
 .clear {
     clear: both;
+}
+
+.blog-content p {
+    margin: 0 0 20px;
+    line-height: 24px;
+}
+.blog-content li {
+    line-height: 24px;
 }
 
 .center {
@@ -48,6 +57,7 @@ body {
     right: -115px;
     top: 50px;
     width: 240px;
+    font-size: 14px;
 }
 .sidebar-right .content {
     margin: 20px;
@@ -104,6 +114,9 @@ code {
     white-space: pre;
 }
 
+.code-block {
+    margin: 0 0 20px;
+}
 .highlighttable td {
     padding: 0;
 }
@@ -133,6 +146,9 @@ code {
     -webkit-border-bottom-left-radius: 4px;
     -moz-border-radius-bottomleft: 4px;
     border-bottom-left-radius: 4px;
+}
+.code {
+    width: 100%;
 }
 .code pre {
     font-family: 'Droid Sans Mono', sans-serif;
