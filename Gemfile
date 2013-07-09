@@ -17,6 +17,8 @@ gem "pygments.rb"
 
 gem "middleman-syntax"
 
+gem "middleman-minify-html"
+
 # For faster file watcher updates:
 # gem "wdm", "~> 0.1.0") # Windows
 
