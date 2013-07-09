@@ -11,6 +11,12 @@ gem "middleman-blog"
 gem "builder"
 gem "nokogiri"
 
+# recommended markdown parser
+gem "redcarpet"
+gem "pygments.rb"
+
+gem "middleman-syntax"
+
 # For faster file watcher updates:
 # gem "wdm", "~> 0.1.0") # Windows
 

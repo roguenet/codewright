@@ -12,6 +12,20 @@ activate :blog do |blog|
   blog.layout = "blog_layout"
 end
 
+activate :directory_indexes
+
+# Use middleman-syntax and redcarpet for our markdown engine (redcarpet is
+# required)
+set :markdown_engine, :redcarpet
+set :markdown, :fenced_code_blocks => true,
+               :autolink => true,
+               :smartypants => true
+activate :syntax
+
+# Include and configure lib/blog_helpers
+require 'lib/blog_helpers'
+helpers BlogHelpers
+
 page "/feed.xml", :layout => false
 
 # Build-specific configuration
