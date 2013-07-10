@@ -1,0 +1,22 @@
+<!-- 'login' route's template, goes in the top level outlet, is replaced by other route content
+     after -->
+<div class="session_form">
+    <form>
+        <fieldset>
+            <legend>Sign In</legend>
+            <label>
+                Username<br>
+                {{view Ember.TextField name="username" valueBinding="username"}}
+            </label>
+            <label>
+                Password<br>
+                {{view Ember.TextField type="password" name="password" valueBinding="password"}}
+            </label>
+            <label class="checkbox">Remember me {{view Ember.Checkbox type="checkbox"
+                name="remember_me" checkedBinding="remember"}}</label>
+            <br>
+            <!-- login action handled in LoginRoute -->
+            <button {{action "login"}} class="btn" type="submit">Sign In</button>
+        </fieldset>
+    </form>
+</div>

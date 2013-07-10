@@ -1,0 +1,39 @@
+---
+title: Authentication in Ember.js
+tags: javascript, ember
+published: false
+---
+
+I've been getting my head wrapped around Ember all week, and the biggest problem I kept coming back
+to is that I couldn't figure out how to accept errors from the server and then route to login when
+appropriate in a general way. Ember really wants you to only change route from within a ```Route```,
+and it does not make it easy to get the current ```Route``` from elsewhere. This appears to be
+because if something happens to screw with routing at the wrong time, it's a Badness, so we have to
+work from within those restrictions.
+
+READMORE
+
+Long story short, I tried out ember-data and ember-auth and found both a bit too alpha/beta for my
+tastes at the moment. I'm sure they'll be awesome in the long run, but for now there are enough
+frustrating quirks and annoyances with what I was trying to do that I decided to roll my own. [An
+excellent writeup by Robin Ward](http://eviltrout.com/2013/03/23/ember-without-data.html) on using
+ember without ember-data that helped me make that decision.
+
+With this app structure in place, any ```Route``` that uses ```App.Ajax``` and utilizes the
+```GET``` or ```POST``` functions will respond correctly to an auth challenge from the server, by
+redirecting the user to the ```login``` route. Always remember to protect your data: if a service
+call requires authenticated access, return an authentication challenge from the server. Never trust
+that the app is sending you kosher data. It is really easy to screw with the internal state of an
+Ember app (or any JS app, really) through the browser console.
+
+The templates are structured to look nice by using
+[Twitter's Bootstrap CSS](http://twitter.github.io/bootstrap/). I am using Ember 1.0.0-rc4 (way too
+many guides leave this off, and Ember has changed a ton in the last year... reading a guide for an
+old version is an excellent way to waste many hours, as my last week will show).
+
+
+<%= render_code("app.hbs", nil) %>
+
+<%= render_code("login.hbs", nil) %>
+
+<%= render_code("app.js", "javascript") %>

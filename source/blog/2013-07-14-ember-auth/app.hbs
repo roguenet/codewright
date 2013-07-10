@@ -1,0 +1,23 @@
+<!-- top level app -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <a class="brand" href="#">App</a>
+        <!-- if our App's authToken field is set, display a logout button. Action event is handled
+             in ApplicationRoute -->
+        {{#if App.authToken}}
+            <button class="btn pull-right" {{action logout}}>Logout</button>
+        {{/if}}
+    </div>
+</div>
+<div class="container">
+    <!-- if our App's error field is set, display the error with a close button. Button's action is
+         handled in ApplicationRoute -->
+    {{#if App.error}}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert"
+                {{action "dismissError"}}>&times;</button>
+            {{App.error}}}
+        </div>
+    {{/if}}
+    {{outlet}}
+</div>
