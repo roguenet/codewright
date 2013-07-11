@@ -4,36 +4,81 @@ tags: javascript, ember
 published: false
 ---
 
-I've been getting my head wrapped around Ember all week, and the biggest problem I kept coming back
-to is that I couldn't figure out how to accept errors from the server and then route to login when
-appropriate in a general way. Ember really wants you to only change route from within a ```Route```,
-and it does not make it easy to get the current ```Route``` from elsewhere. This appears to be
-because if something happens to screw with routing at the wrong time, it's a Badness, so we have to
-work from within those restrictions.
+This post is about authentication, but it also covers a more general topic: setting up a framework
+for ajax calls that accepts errors and reacts to them appropriately. When implementing my own
+[Ember](http://emberjs.com/) app, I decided against ember-data and ember-auth because they're both
+new enough that the rough edges were causing me more headache than good while learning my way around
+Ember to being with. I also really struggled with getting basic auth such as this working while
+learning Ember, so hopefully this will be useful to a few other Ember newbies out there.
+
+This guide was written for Ember 1.0.0-rc4.
 
 READMORE
 
-Long story short, I tried out ember-data and ember-auth and found both a bit too alpha/beta for my
-tastes at the moment. I'm sure they'll be awesome in the long run, but for now there are enough
-frustrating quirks and annoyances with what I was trying to do that I decided to roll my own. [An
-excellent writeup by Robin Ward](http://eviltrout.com/2013/03/23/ember-without-data.html) on using
-ember without ember-data that helped me make that decision.
+### The Difficulty
 
-With this app structure in place, any ```Route``` that uses ```App.Ajax``` and utilizes the
-```GET``` or ```POST``` functions will respond correctly to an auth challenge from the server, by
-redirecting the user to the ```login``` route. Always remember to protect your data: if a service
-call requires authenticated access, return an authentication challenge from the server. Never trust
-that the app is sending you kosher data. It is really easy to screw with the internal state of an
-Ember app (or any JS app, really) through the browser console.
+Ember makes it hard to get a reference to the currently active ```Route```, and with good reason.
+If the active route is changed in an unexpected way, or at an unexpected time, the result is
+undefined. Therefore, all result handlers from ajax calls must have a reference to the ```Route```
+in hand so that they can react to the results appropriately.
 
-The templates are structured to look nice by using
-[Twitter's Bootstrap CSS](http://twitter.github.io/bootstrap/). I am using Ember 1.0.0-rc4 (way too
-many guides leave this off, and Ember has changed a ton in the last year... reading a guide for an
-old version is an excellent way to waste many hours, as my last week will show).
+[Robin Ward wrote a good article on using Ember without
+ember-data](http://eviltrout.com/2013/03/23/ember-without-data.html), which convinced me to
+pursue this approach. There are some conventions your service must follow to use ember-data easily
+which I'm not a huge fan of, and the whole thing is still pretty new. I'm sure it'll be awesome
+in time, but for now I'd rather just handle the data layer myself.
 
+### A Solution
+
+A good way to accomplish this is with an Ember
+[Mixin](http://emberjs.com/api/classes/Ember.Mixin.html). With this, we can define a set of
+functions for calling REST services that do some appropriate preliminary processing on the result
+(such as redirecting to a login route when receiving an authentication challenge).
+
+First, set up our App. Local storage is used to store the authentication token for two reasons: 1)
+cookies can be unreliable (they are difficult to set correctly if your app is running within an
+iframe, for instance) and 2) in some server frameworks, pulling cookies out of a request is slightly
+less convenient than GET or POST parameters, and we don't actually need the browser to attach our
+auth token to each request for us; we can handle it.
+
+<%= render_code("app.js", "javascript", :range => [1, 7]) %>
+
+Remember that ```LocalStorage``` is a fairly new feature. If you are developing an app that must
+support older browsers (unlikely, since you're developing in Ember to begin with) then you should
+use Cookies as your authentication transport instead, as annoying a they are.
+
+Next, define the Mixin.
+
+<%= render_code("app.js", "javascript", :range => [9, 56]) %>
+
+### Templates
+
+The templates are structured to look reasonable with
+[Twitter's Bootstrap CSS](http://twitter.github.io/bootstrap/).
+
+Here we have the top level template. It includes a conditionally displayed logout button in the
+top navigation bar, and a container for app contents.
 
 <%= render_code("app.hbs", nil) %>
 
+The login template is pretty standard: username and password fields, plus a "remember me"
+checkbox, telling the application to store the authentication token in ```LocalStorage``` if
+checked.
+
 <%= render_code("login.hbs", nil) %>
 
-<%= render_code("app.js", "javascript") %>
+### Routes
+
+```App.Router``` is defined here with just the login route, but of course a full app would have
+more. The ```ApplicationRoute``` handles the ```logout``` event (from the logout button).
+
+<%= render_code("app.js", "javascript", :range => [58, 81]) %>
+
+The login logic uses a ```LoginCreds``` model that the login template fills in, the ```App.Ajax```
+mixin, and the Ajax call to our login service.
+
+<%= render_code("app.js", "javascript", :range => [83, 130]) %>
+
+That's it! Using the ```Mixin``` for normal service calls is easy:
+
+<%= render_code("example.js", "javascript") %>
