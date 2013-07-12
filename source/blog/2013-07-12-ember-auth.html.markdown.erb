@@ -1,26 +1,27 @@
 ---
 title: Authentication in Ember.js
 tags: javascript, ember
-published: false
 ---
 
 This post is about authentication, but it also covers a more general topic: setting up a framework
 for ajax calls that accepts errors and reacts to them appropriately. When implementing my own
-[Ember](http://emberjs.com/) app, I decided against ember-data and ember-auth because they're both
-new enough that the rough edges were causing me more headache than good while learning my way around
-Ember to being with. I also really struggled with getting basic auth such as this working while
-learning Ember, so hopefully this will be useful to a few other Ember newbies out there.
+[Ember](http://emberjs.com/) app, I decided against [ember-data](https://github.com/emberjs/data)
+and [ember-auth](https://github.com/heartsentwined/ember-auth) because they're both new enough that
+the rough edges were causing me more headache than good while learning my way around Ember to begin
+with. I also really struggled with getting basic auth such as this working while learning Ember,
+so hopefully this will be useful to a few other Ember newbies out there.
 
-This guide was written for Ember 1.0.0-rc4.
+This guide was written for Ember 1.0.0-rc4, and originally published in May as a
+[gist](https://gist.github.com/roguenet/5687827).
 
 READMORE
 
 ### The Difficulty
 
-Ember makes it hard to get a reference to the currently active ```Route```, and with good reason.
-If the active route is changed in an unexpected way, or at an unexpected time, the result is
-undefined. Therefore, all result handlers from ajax calls must have a reference to the ```Route```
-in hand so that they can react to the results appropriately.
+Ember makes it hard to statically get a reference to the currently active ```Route```, and with
+good reason. If the active route is changed in an unexpected way, or at an unexpected time, the
+result is undefined. Therefore, all result handlers from ajax calls must have a reference to the
+```Route``` in hand so that they can react to the results appropriately.
 
 [Robin Ward wrote a good article on using Ember without
 ember-data](http://eviltrout.com/2013/03/23/ember-without-data.html), which convinced me to
@@ -79,6 +80,6 @@ mixin, and the Ajax call to our login service.
 
 <%= render_code("app.js", "javascript", :range => [83, 130]) %>
 
-That's it! Using the ```Mixin``` for normal service calls is easy:
+That's it! Using the ```App.Ajax``` for normal service calls is easy:
 
 <%= render_code("example.js", "javascript") %>
