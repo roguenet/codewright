@@ -38,8 +38,8 @@ configure :build do
     settings.cdn_url.to_s
   end
 
-  activate :minify_css
-  activate :minify_javascript
+  activate :minify_css, :ignore => /^\/blog/
+  activate :minify_javascript, :ignore => /^\/blog/
   activate :minify_html
   activate :asset_hash, :ignore => [/^images\/aaaa/, /^blog/]
 end
