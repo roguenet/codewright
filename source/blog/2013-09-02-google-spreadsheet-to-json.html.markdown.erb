@@ -4,9 +4,68 @@ tags: java, json
 ---
 
 Dynamic game configuration is always useful, and doing it cheaply and easily is especially
-important for indies. Setting up a Google Spreadsheet with your runtime configuration data enables
-easy collaborative editing, and having a process that can read that data and export json makes
-it easy to use that data at runtime in whatever client language you find suitable. In this article
-I'm using GSon for JSON serialization, but it wouldn't be difficulty to use Jasper instead.
+important for small indy studios. Setting up a
+[Google Spreadsheet](https://docs.google.com/spreadsheet/) with your runtime configuration data
+enables easy collaborative editing, and having a process that can read that data and export
+JSON makes it easy to use that data at runtime in whatever client language you find suitable. In
+this article I'm using [Gson](https://code.google.com/p/google-gson/) for JSON serialization, but
+it wouldn't be difficulty to use [Jackson](http://jackson.codehaus.org/) instead, if that's how you
+roll. READMORE
 
+When my wife and I started working on our own
+[hidden object game for mobile](http://www.plixl.com/), we needed a game data editor that wouldn't
+take me a long time to write and would be easily extensible. We settled on using a specially
+formatted spreadsheet in Google Drive that would be read by a process on our dashboard server to
+generate JSON that the client would load either from the game server or from a static file in
+[Amazon S3](http://aws.amazon.com/s3/).
 
+<p class='text-center'>
+<%= image_tag '/blog/2013/09/02/google-spreadsheet-to-json/example.png',
+    :alt => 'Example Usage' %>
+</p>
+
+####As shown in the example above, the conversion is pretty straightforward:
+* Keys in the left column, values in the column(s) to the right.
+* Keys get camel-cased automatically.
+* Cells that start with an asterisk are comments.
+* If a row has multiple values, it is automatically converted to an array.
+* A key may be opening/closing brackets or braces to wrap arrays and objects.
+* A key cell may have a compound value to open/close objects and arrays inline with a name.
+* Empty rows are ignored (not shown in the example).
+
+### Code time
+
+The public entry point to this utility takes a cell feed ```URL``` and an instance of
+[```GoogleCredential```](http://javadoc.google-api-java-client.googlecode.com/hg/1.15.0-rc/com/google/api/client/googleapis/auth/oauth2/GoogleCredential.html). Retreiving these values is outside
+the scope of this article. I recommend reading through the
+[Google Spreadsheets API documentation](https://developers.google.com/google-apps/spreadsheets/)
+for guidance in setting up your access to spreadsheets in general.
+
+<%= render_code("SpreadsheetReader.java", "java", :range => [26,43]) %>
+
+Rather than go through this whole class line by line, I'm just going to talk about a couple of
+meaty bits. The full class may be downloaded from the link at the head of any of these inline code
+sections.
+
+The static inner class SpreadsheetRow is reponsible for the bulk of the parsing work. It filters
+out comments:
+
+<%= render_code("SpreadsheetReader.java", "java", :range => [213,220]) %>
+
+Finds all the values in a given row:
+
+<%= render_code("SpreadsheetReader.java", "java", :range => [230,238]) %>
+
+And breaks up compound keys into multiple logical rows for easier processing:
+
+<%= render_code("SpreadsheetReader.java", "java", :range => [243,277]) %>
+
+Once the values of the spreadsheet cells have been read and parsed into this format, building up
+the JSON ```Object``` and ```Array``` representation is relatively straightforward.
+
+<%= render_code("SpreadsheetReader.java", "java", :range => [60,148]) %>
+
+That's about it! Using this tool, we can quickly release tuning updates to our clients in the wild,
+without requiring a new client build (especially important for games in any kind of app store that
+has a vetting process that takes a long time). In a future article, I'll talk about the tools we're
+using to generate code for reading our configuration data format from the generated JSON files.

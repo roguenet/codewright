@@ -25,10 +25,10 @@ import static org.roguenet.util.Log.log;
 
 public class SpreadsheetReader {
     /**
-     * Finds and reads the spreadsheet for the given levelId.
+     * Converts the worksheet at the given URL to JSON.
      */
     public JsonObject readJson (String url, GoogleCredential cred) {
-        SpreadsheetService service = new SpreadsheetService("PlixlDashboard");
+        SpreadsheetService service = new SpreadsheetService("TestServiceCall");
         service.setOAuth2Credentials(cred);
         try {
             CellFeed feed = service.getFeed(new URL(url), CellFeed.class);
@@ -200,7 +200,7 @@ public class SpreadsheetReader {
 
         /**
          * Returns 0 or more SpreadsheetRows, depending on the content of the row in the spreadsheet
-         * that the iterator is expected to be positioned at the start of.
+         * where the iterator is positioned.
          */
         public static List<SpreadsheetRow> parse (ListIterator<CellEntry> iter) {
             List<SpreadsheetRow> rows = new ArrayList<SpreadsheetRow>();
