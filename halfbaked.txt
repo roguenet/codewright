@@ -1,0 +1,10 @@
+A list of half baked ideas for future blog posts
+
+ * Game UI in Flump
+
+ * Microtome (needs some repository cleanup and coordination with Tim first).
+
+ * "I am not a real Indie"
+ ** Indies are seen as having this responsibility to forward the medium and not worry about petty
+    things like income. I feel no such obligation and partially resent the idea that if you're
+    making games on your own, you need to be pushing boundaries and doing other super risky shit.
