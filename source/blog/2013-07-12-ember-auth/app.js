@@ -98,7 +98,7 @@ App.LoginController = Ember.ObjectController.extend({});
 App.LoginRoute = Ember.Route.extend(App.Ajax, {
     model: function () {
         // let our login template fill in the properties of a creds object
-        return Dashboard.LoginCreds.create({});
+        return App.LoginCreds.create({});
     },
 
     events: {
@@ -115,7 +115,7 @@ App.LoginRoute = Ember.Route.extend(App.Ajax, {
                         // setting this value will reveal our logout button
                         App.set('authToken', json.authToken);
                         if (model.get('remember')) {
-                            localStorage['authToken'] = json.authToken);
+                            localStorage['authToken'] = json.authToken;
                         } else {
                             // make sure a stale value isn't left behind
                             delete localStorage['authToken'];
