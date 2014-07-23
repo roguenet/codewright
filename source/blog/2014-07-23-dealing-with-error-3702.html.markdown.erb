@@ -1,0 +1,108 @@
+---
+title: Dealing with Stage3D Error 3702
+tags: actionscript, starling, stage3d
+---
+
+### The Problem
+
+```Stage3D```'s Error #3702 is the "[Context3D not available](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/runtimeErrors.html)"
+error that may occur if you try to initialize ```Stage3D``` with an unsupported profile. In
+[Starling](http://gamua.com/starling/), this error is typically handled by Starling itself, and
+results in a dark red warning across the stage with a message like "Context 3D not available!
+Possible reasons: wrong wmode or missing device support." If you're like me, this error never
+happens on your own machines or devices, but you start getting complaints from players that they
+can't play your game, and you have no idea why.
+
+I ended up adding an automated bug report to my web build when this particular case comes up to see
+just how many people are affected, and I was shocked by how quickly I landed a pile of bug reports.
+I don't have specific player affected percentage numbers, but it turned out not to be the very rare
+case that I had previously assumed it is, so I promptly freaked out and flailed around for a few
+hours, trying to get that flood of reports down to a trickle. It was happening across all modern
+browsers, OSs and Flash versions; there seemed to be no rhyme or reason.
+
+### The Flailing
+
+I did a lot of googling, and found that some people were encountering this problem, but did not
+find a good general case solution. A lot of the posts I found spread around the Internet showed
+a general lack of understanding and confusion about why some people were affected and not others.
+I finally came across [a post](http://forums.rebuildgame.com/viewtopic.php?f=2&t=741) on the
+[Rebuild](http://rebuildgame.com/) game forums with the same problem. Rebuild is a fantastic series
+of games built by the incredible [Sarah Northway](http://northwaygames.com/). The forum post
+looked like she'd probably found a solution. It wasn't posted there, so I bugged her on twitter and
+she generously shared her erudite wisdom with me. The solution found here is hers, adapted a bit.
+
+### Context3D Profiles
+
+The first thing to understand about this error is what the various
+[Context3DProfile](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display3D/Context3DProfile.html)s
+are, and why you might want to use each one.
+
+####A quick (by no means comprehensive) breakdown:
+* ```Context3DProfile.BASELINE_CONSTRAINED```. This is the lowest common denoninator profile. If you
+  can get all the functionality you want from this profile, you can just use it and ignore the rest
+  of this article. If you want to use large (4096x4096) textures or Rectangular textures, you want
+  to avoid this proile.
+
+* ```Context3DProfile.BASELINE```. This is the middleground profile. The main advantage over
+  ```BASELINE_CONSTRAINED``` is that it supports rectangular (instead of only square) textures.
+  Starling blurs this limitation by doing an expensive (time and memory) ```Bitmap``` copy of your
+  source art from the rectangle it came in to the appropriate square size if it must.
+
+* ```Context3DProfile.BASELINE_EXTENDED```. If you want to use 4096x4096 textures, you must run in
+  this profile. If you want to run on older devices, you'll need to have multiple versions of your
+  textures at different sizes so that your game can still run if it must degrade to a lower profile.
+
+### The Counterfeit Solution
+
+Adobe recently added [```Stage3D.requestContext3DMatchingProfiles```](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display/Stage3D.html#requestContext3DMatchingProfiles())
+which Starling added support for by passing a ```Vector.<String>``` of profiles in for the profile
+parameter of the ```Starling constructor```. This was meant to automate this process, correctly
+degrading through profiles until one is found that will work on the current computer or device.
+Unfortunately, Adobe appears to have flubbed it; this method no longer appears to support
+[```Context3DRenderMode.AUTO```](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display3D/Context3DRenderMode.html#AUTO),
+which is the mechanism that lets ```Stage3D``` init fall back to software rendering if it must.
+This can happen if the computer doesn't have hardware acceleration support, or (more likely) the
+player has turned off hardware acceleration for the Flash Player.
+
+The result is that if you try to use the new ```requestContext3DMatchingProfiles```
+method, you can end up landing a nasty Error #3702, even if you passed in all of the ```Context3D```
+profiles.
+
+### Code Time
+
+The solution that Sarah (and now also [Mosaic Medley](https://www.facebook.com/games/?fbs=100&app_id=271506213020723))
+uses is to attempt intialization of each profile in order using the older
+[```Stage3D.requestContext3D```](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display/Stage3D.html#requestContext3D()) function, catching errors and moving on to the next
+until a working ```Context3DProfile``` is found. With appropriate embed settings
+(```wmode=direct```), and requiring a modern Flash version (12.0.0 is good enough for my uses),
+I have yet to receive an Error #3702 using this approach.
+
+The crux is in how we initialize Stage3D:
+
+<%= render_code("App.as", "actionscript", :range => [50,113]) %>
+
+Note that I'm using a ```Future``` here. This is from the reactive programming library for
+actionscript, [React](https://github.com/tconkling/react-as3), which I cannot recommend enough.
+```Promise``` is simply the concrete implementation of ```Future```.
+
+The rest of the implementation is pretty straightforward. We start with a class that extends
+```Sprite```, and start the ```Stage3D``` init when we're added to the stage:
+
+<%= render_code("App.as", "actionscript", :range => [18,28]) %>
+
+```initStarling``` is given the profile ```String``` by the ```Future``` that ```initStage3D```
+returns. I found that on some platforms, ```Stage3D.context3D.profile``` was mysteriously missing.
+I didn't find a reason for it, and didn't dig further because I was able to just pass it around
+myself. Perhaps this problem is also why Starling requires that you pass the configured profile
+in to the constructor.
+
+The last bit to understand is that when we pass the already initialized ```Stage3D``` instance in
+to Starling, it will assume that it's sharing that ```Stage3D``` with another framework, which
+modifies its behavior in several ways. Since we're not actually sharing the ```Stage3D``` around,
+we can reset the ```shareContext``` property on the Starling instance before continuing with
+init:
+
+<%= render_code("App.as", "actionscript", :range => [30,48]) %>
+
+That's it! Hopefully this can clear up some of the general Error #3702 confusion out there. If you
+have any questions, comments or find a problem with the code here, leave it in a comment below.
