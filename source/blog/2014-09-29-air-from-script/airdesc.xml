@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/15.0">
+  <id>com.foo.app</id>
+  <!-- Bundle Identifier. Required. -->
+  <filename>App</filename>
+  <!-- Used as the filename for the application. Required. -->
+  <name>App</name>
+  <!-- The name that is displayed below the app icon. -->
+  <versionNumber>0.1.0</versionNumber>
+  <!-- Settings for the application's initial window. Required. -->
+  <initialWindow>
+    <!-- arbitrary, unused -->
+    <width>1152</width>
+    <height>768</height>
+    <!-- The main SWF or HTML file of the application. Required. -->
+    <content>app.swf</content>
+  </initialWindow>
+</application>
+

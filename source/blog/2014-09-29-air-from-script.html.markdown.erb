@@ -1,0 +1,60 @@
+---
+title: Command-line AIR support
+tags: actionscript
+---
+
+Running an Actionscript project from the command-line is not something that is frequently required
+(and I would certainly not recommend using Actionscript as a general scripting language), but there
+are corner cases where it is occasionally useful to do so. For instance, I have recently
+been working on recoloring system (topic for a future blog post!) stacked on top of
+[Flump](https://github.com/threerings/flump), and the tools require that we do some post-processing
+on the Flump output. This processing requires both parsing the Flump library (for which we already
+have code written in Actionscript), and the opening and exporting of SWF assets
+which can only be done from within Actionscript. This process does not need any buttons or
+display to run; it can be entirely automated, or it could be if it were easy to run Actionscript
+from the command-line.
+
+You can get most of the way there by [launching a compiled AIR app from the command-line](http://blogs.adobe.com/simplicity/2008/11/how_to_launch_an_air_app_from_the_command_line.html).
+However, while that might be handy for using a script to launch a typical, visual AIR app, it has
+a couple of problems for our purposes. For one, the compiled app is huge (the tiny included
+app in this post runs ~50MB when compiled as a standalone Mac .app package). For another, you can't
+write directly to ```stdout``` from AIR (which is strange, since you can access ```stdout```,
+```stderr``` and ```stdin``` in
+[native process which you spawn](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/desktop/NativeProcess.html)).
+
+If you happen to find yourself in the rare circumstance of needing to run a build process or art
+pipeline task in Actionscript, perhaps this can help you out. I'm running with the assumption that
+this is executed on a machine with developer tools installed, so it executes ADL directly rather
+than operating on a compiled AIR app. To get around the lack of stdout support, I write to a file
+and tail it from a bash script, wrapping the whole thing up into a package that is pretty typical
+for a command-line script. It does need to be executed in an environment that has windowing support,
+so this may not be suitable for a typical build server, but I leave that problem as an exercise for
+someone who actually needs to solve it.
+
+First, we have a very simple sample app:
+
+<%= render_code("App.as", "actionscript", :range => [11,41]) %>
+
+As you can see, we get access to our command-line arguments via ```InvokeEvent.arguments```, we
+can easily write our output to a temporary file instead of using ```trace```, and the app can take
+as long as necessary to complete (including running over multiple frames if needed).
+
+AIR apps require an app descriptor:
+
+<%= render_code("airdesc.xml", "xml") %>
+
+This descriptor is just putting forth minimal effort to actually launch the app with ADL.
+
+Finally, a bash script to run the whole thing:
+
+<%= render_code("app-run.sh", "bash") %>
+
+We have to do a little bit of process gymnastics to make this act like a typical command-line
+script. Primarily, this just means launching both ADL and the tail process in the background, then
+waiting for ADL to complete before performing some cleanup.
+
+The ```bin/``` directory that contains the script should also contain the AIR descriptor XML file,
+and the compiled SWF containing ```App.as```. That's all there is to it! Hopefully people don't
+need something like this very often because it's a nasty hack and isn't a good solution to very many
+problems, but if you have something that absolutely must run in Actionscript as close to headless
+as possible, there it is.
