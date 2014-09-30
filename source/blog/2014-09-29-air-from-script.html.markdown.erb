@@ -6,7 +6,7 @@ tags: actionscript
 Running an Actionscript project from the command-line is not something that is frequently required
 (and I would certainly not recommend using Actionscript as a general scripting language), but there
 are corner cases where it is occasionally useful to do so. For instance, I have recently
-been working on recoloring system (topic for a future blog post!) stacked on top of
+been working on a recoloring system (topic for a future blog post!) stacked on top of
 [Flump](https://github.com/threerings/flump), and the tools require that we do some post-processing
 on the Flump output. This processing requires both parsing the Flump library (for which we already
 have code written in Actionscript), and the opening and exporting of SWF assets
@@ -50,7 +50,7 @@ Finally, a bash script to run the whole thing:
 <%= render_code("app-run.sh", "bash") %>
 
 We have to do a little bit of process gymnastics to make this act like a typical command-line
-script. Primarily, this just means launching both ADL and the tail process in the background, then
+script. Primarily, this just means launching both the tail process in the background, then
 waiting for ADL to complete before performing some cleanup.
 
 The ```bin/``` directory that contains the script should also contain the AIR descriptor XML file,

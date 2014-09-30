@@ -2,19 +2,17 @@
 
 pushd `dirname $0` > /dev/null
 
-# empty the current file out, if it exists, otherwise create it for tailing
+# empty the current file out if it exists, otherwise create it for tailing
 echo -n "" > out.log
-# start ADL in the background, passing in our command-line arguments
-adl airdesc.xml -- $@ &
-ADL_PID=$!
-
-# Pipe to /dev/null to avoid doubled up output from tail. Start tail in the background
-tail -F out.log > /dev/null &
+# Start tail in the background
+tail -F out.log &
 TAIL_PID=$!
 
-# Wait for ADL to finish
-wait $ADL_PID
+# start ADL, passing in our command-line arguments
+adl airdesc.xml -- $@
 
+# give it a second to make sure we caught all the output
+sleep 1
 # Now that ADL is done, kill tail, cleanup and exit
 disown $TAIL_PID
 kill -9 $TAIL_PID
