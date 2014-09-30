@@ -50,7 +50,7 @@ Finally, a bash script to run the whole thing:
 <%= render_code("app-run.sh", "bash") %>
 
 We have to do a little bit of process gymnastics to make this act like a typical command-line
-script. Primarily, this just means launching both the tail process in the background, then
+script. Primarily, this just means launching the tail process in the background, then
 waiting for ADL to complete before performing some cleanup.
 
 The ```bin/``` directory that contains the script should also contain the AIR descriptor XML file,
